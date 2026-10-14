@@ -286,8 +286,7 @@ function initEventListeners() {
         "cold-radar": "Cold Lead Radar & Recovery",
         "chat-hub": "WhatsApp Business Chat Hub",
         "list-view": "All Leads Database Ledger",
-        "roi-calculator": "SMB Lost Revenue & ROI Engine",
-        "lean-hub": "Unit 1 Academic Defense & Lean Canvas"
+        "roi-calculator": "SMB Lost Revenue & ROI Engine"
       };
       document.getElementById("pageTitleText").innerText = titleMap[btn.dataset.tab] || "PulseLead";
     });
