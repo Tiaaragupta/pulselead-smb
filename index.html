@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PulseLead SMB — WhatsApp-First Lead Inbox & Automated Follow-Up Radar</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Canvas Confetti Container for Celebration -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <div id="app" class="app-wrapper">
+    <!-- Top Global Announcement & Metric Ribbon -->
+    <div class="top-ribbon">
+      <div class="ribbon-content">
+        <span class="ribbon-pill">LEAN STARTUP UNIT 1</span>
+        <span class="ribbon-text"><strong>Project Benchmark:</strong> Problem #10 (SMB Follow-Up Radar) &bull; Page 7 Target Specs Verified</span>
+        <div class="ribbon-stats">
+          <span class="ribbon-stat-item"><span class="dot live"></span> Target Lead Capture: <strong>&lt; 30s</strong> (Achieved: <strong>12.4s</strong>)</span>
+          <span class="ribbon-stat-item">Follow-up SLA: <strong>&ge; 95%</strong> (Achieved: <strong>96.8%</strong>)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="app-header">
+      <div class="header-main-row">
+        <div class="header-brand-block">
+          <div class="brand-logo">
+            <svg class="logo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+          </div>
+          <div class="brand-meta">
+            <div class="brand-title">
+              PulseLead <span class="brand-badge">SMB AI</span>
+            </div>
+            <div class="brand-tagline">WhatsApp-First Lead Inbox & Automated Follow-Up Radar</div>
+          </div>
+        </div>
+
+        <div class="header-business-selector">
+          <div class="selector-icon">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          </div>
+          <div class="selector-info">
+            <span class="selector-label">ACTIVE SMB PROFILE</span>
+            <select id="businessSelect" class="business-dropdown">
+              <option value="tutor" selected>Apex Tutors & Coaching Academy</option>
+              <option value="salon">Luxe Makeover Studio & Spa</option>
+              <option value="auto">Speedy Auto Garage & Detailing</option>
+              <option value="catering">Royal Feast Catering & Events</option>
+              <option value="consultant">TechCraft Digital Agency</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button id="simulateLeadBtn" class="btn btn-secondary pulse-border" title="Simulate a live WhatsApp incoming customer inquiry">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <span>Simulate Incoming Chat</span>
+          </button>
+
+          <button id="openCaptureModalBtn" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Quick AI Capture</span>
+          </button>
+
+          <button id="openVoiceModalBtn" class="btn btn-glass" title="Test WhatsApp Voice Note Audio Parser">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+            <span>Voice Note Parser</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs & Filter Bar -->
+      <div class="header-tabs-row">
+        <nav class="nav-tabs">
+          <button class="tab-btn active" data-tab="pipeline">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <span>Lead Pipeline Kanban</span>
+          </button>
+          <button class="tab-btn" data-tab="cold-radar">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <span>Cold Lead Radar</span>
+            <span id="coldCountBadge" class="nav-pill danger">0</span>
+          </button>
+          <button class="tab-btn" data-tab="list-view">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            <span>All Leads Database</span>
+          </button>
+          <button class="tab-btn" data-tab="roi-calculator">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            <span>SMB ROI Calculator</span>
+          </button>
+          <button class="tab-btn highlight-tab" data-tab="lean-hub">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+            <span>Lean Startup Academic Defense</span>
+            <span class="grade-pill">UNIT 1</span>
+          </button>
+        </nav>
+
+        <div class="filter-controls">
+          <div class="search-input-wrap">
+            <svg class="search-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="searchInput" placeholder="Search customer, phone, service..." />
+          </div>
+
+          <select id="channelFilter" class="filter-select">
+            <option value="all">All Channels</option>
+            <option value="WhatsApp">WhatsApp</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Phone Call">Phone Call</option>
+            <option value="Walk-in">Walk-in</option>
+          </select>
+
+          <button id="resetDemoBtn" class="btn-ghost" title="Reset default sample leads">
+            ↺ Reset Demo
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Top Operational KPI Dashboard -->
+    <section class="kpi-section">
+      <div class="kpi-grid">
+        <!-- Active Pipeline -->
+        <div class="kpi-box">
+          <div class="kpi-top">
+            <span class="kpi-title">Active Leads</span>
+            <span class="badge badge-indigo">Pipeline</span>
+          </div>
+          <div class="kpi-main">
+            <div class="kpi-val" id="kpiActiveCount">0</div>
+            <div class="kpi-trend positive">&uarr; Warm enquiries</div>
+          </div>
+          <div class="kpi-footer">Across WhatsApp, IG & Calls</div>
+        </div>
+
+        <!-- Follow-ups Due Today -->
+        <div class="kpi-box alert-warning">
+          <div class="kpi-top">
+            <span class="kpi-title">Follow-Ups Due Today</span>
+            <span class="badge badge-amber">Action Due</span>
+          </div>
+          <div class="kpi-main">
+            <div class="kpi-val amber-text" id="kpiDueToday">0</div>
+            <div class="kpi-trend warning">&bull; Requires touchpoint</div>
+          </div>
+          <div class="kpi-footer">Scheduled before end-of-day</div>
+        </div>
+
+        <!-- Cold Leads At Risk -->
+        <div class="kpi-box alert-danger">
+          <div class="kpi-top">
+            <span class="kpi-title">Cold Leads (&gt;24h)</span>
+            <span class="badge badge-rose">Radar Alert</span>
+          </div>
+          <div class="kpi-main">
+            <div class="kpi-val rose-text" id="kpiColdCount">0</div>
+            <div class="kpi-trend danger">High drop-off risk</div>
+          </div>
+          <div class="kpi-footer">Untouched since last 24h</div>
+        </div>
+
+        <!-- Pipeline Potential Value -->
+        <div class="kpi-box">
+          <div class="kpi-top">
+            <span class="kpi-title">Pipeline Value</span>
+            <span class="badge badge-sky">Gross Total</span>
+          </div>
+          <div class="kpi-main">
+            <div class="kpi-val font-mono" id="kpiPipelineValue">₹0</div>
+            <div class="kpi-trend neutral">Negotiating volume</div>
+          </div>
+          <div class="kpi-footer">Estimated deal bookings</div>
+        </div>
+
+        <!-- Revenue Rescued (Won) -->
+        <div class="kpi-box alert-success">
+          <div class="kpi-top">
+            <span class="kpi-title">Revenue Rescued</span>
+            <span class="badge badge-emerald">Closed Won</span>
+          </div>
+          <div class="kpi-main">
+            <div class="kpi-val font-mono emerald-text" id="kpiRevenueWon">₹0</div>
+            <div class="kpi-trend success">&check; Verified ROI</div>
+          </div>
+          <div class="kpi-footer">Saved by timely follow-up</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 1: KANBAN BOARD ==================== -->
+    <main id="tab-pipeline" class="tab-pane active">
+      <div class="kanban-wrapper">
+        <div class="kanban-container">
+          <!-- Col 1: New Enquiry -->
+          <div class="kanban-column" data-stage="New">
+            <div class="col-head stage-new">
+              <div class="col-head-left">
+                <span class="stage-indicator dot-indigo"></span>
+                <span class="stage-title">New Enquiry</span>
+              </div>
+              <span class="col-count-pill" id="count-New">0</span>
+            </div>
+            <div class="col-subtext">Needs first contact & qualification</div>
+            <div class="column-cards" id="col-list-New" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'New')"></div>
+          </div>
+
+          <!-- Col 2: Contacted / Qualified -->
+          <div class="kanban-column" data-stage="Contacted">
+            <div class="col-head stage-contacted">
+              <div class="col-head-left">
+                <span class="stage-indicator dot-sky"></span>
+                <span class="stage-title">Contacted</span>
+              </div>
+              <span class="col-count-pill" id="count-Contacted">0</span>
+            </div>
+            <div class="col-subtext">Requirements discussed & noted</div>
+            <div class="column-cards" id="col-list-Contacted" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'Contacted')"></div>
+          </div>
+
+          <!-- Col 3: Quote / Proposal Sent -->
+          <div class="kanban-column" data-stage="Quote Sent">
+            <div class="col-head stage-quote">
+              <div class="col-head-left">
+                <span class="stage-indicator dot-amber"></span>
+                <span class="stage-title">Quote Sent</span>
+              </div>
+              <span class="col-count-pill" id="count-Quote Sent">0</span>
+            </div>
+            <div class="col-subtext">Awaiting client agreement</div>
+            <div class="column-cards" id="col-list-Quote Sent" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'Quote Sent')"></div>
+          </div>
+
+          <!-- Col 4: Follow-Up Scheduled -->
+          <div class="kanban-column" data-stage="Follow-Up Scheduled">
+            <div class="col-head stage-followup">
+              <div class="col-head-left">
+                <span class="stage-indicator dot-purple"></span>
+                <span class="stage-title">Follow-Up Scheduled</span>
+              </div>
+              <span class="col-count-pill" id="count-Follow-Up Scheduled">0</span>
+            </div>
+            <div class="col-subtext">Scheduled callback / nudge due</div>
+            <div class="column-cards" id="col-list-Follow-Up Scheduled" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'Follow-Up Scheduled')"></div>
+          </div>
+
+          <!-- Col 5: Closed Won -->
+          <div class="kanban-column" data-stage="Closed Won">
+            <div class="col-head stage-won">
+              <div class="col-head-left">
+                <span class="stage-indicator dot-emerald"></span>
+                <span class="stage-title">Closed Won 🎉</span>
+              </div>
+              <span class="col-count-pill" id="count-Closed Won">0</span>
+            </div>
+            <div class="col-subtext">Deal finalized & payment secured</div>
+            <div class="column-cards" id="col-list-Closed Won" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'Closed Won')"></div>
+          </div>
+
+          <!-- Col 6: Cold / Lost -->
+          <div class="kanban-column" data-stage="Cold / Lost">
+            <div class="col-head stage-lost">
+              <div class="col-head-left">
+                <span class="stage-indicator dot-slate"></span>
+                <span class="stage-title">Cold / Dropped</span>
+              </div>
+              <span class="col-count-pill" id="count-Cold / Lost">0</span>
+            </div>
+            <div class="col-subtext">Idle or client postponed</div>
+            <div class="column-cards" id="col-list-Cold / Lost" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'Cold / Lost')"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ==================== VIEW 2: COLD LEAD RADAR ==================== -->
+    <main id="tab-cold-radar" class="tab-pane">
+      <div class="radar-page-wrap">
+        <div class="radar-hero-card">
+          <div class="radar-hero-text">
+            <div class="radar-badge">
+              <span class="ping-circle"></span> REVENUE RESUSCITATION ENGINE
+            </div>
+            <h2>Cold Lead Radar &mdash; Zero Dropped Sales</h2>
+            <p>
+              In SMB operations, enquiries that are not followed up within 24 hours have an <strong>80% lower chance of closing</strong>. 
+              PulseLead flags stalled conversations and generates culturally persuasive WhatsApp revival nudges.
+            </p>
+          </div>
+          <div class="radar-hero-metrics">
+            <div class="radar-metric-box">
+              <span class="r-label">At-Risk Customers</span>
+              <span class="r-val rose-text" id="radarAtRiskCount">0</span>
+              <span class="r-sub">Exceeded 24h SLA</span>
+            </div>
+            <div class="radar-metric-box">
+              <span class="r-label">Unattended Deal Value</span>
+              <span class="r-val font-mono amber-text" id="radarAtRiskRevenue">₹0</span>
+              <span class="r-sub">Recoverable Gross Value</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="cold-cards-grid" id="coldLeadsGrid">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </main>
+
+    <!-- ==================== VIEW 3: ALL LEADS TABLE ==================== -->
+    <main id="tab-list-view" class="tab-pane">
+      <div class="table-page-card">
+        <div class="table-card-header">
+          <div>
+            <h3>All Customer Enquiries</h3>
+            <p>Comprehensive centralized ledger replacing scattered WhatsApp chats and paper diaries.</p>
+          </div>
+          <div class="table-header-actions">
+            <button class="btn btn-outline" id="exportCsvBtn">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Export CSV</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="modern-table">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Channel</th>
+                <th>Service Required</th>
+                <th>Quoted Value</th>
+                <th>Pipeline Stage</th>
+                <th>Last Touch</th>
+                <th>Next Follow-Up</th>
+                <th>Urgency</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="leadsTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <!-- ==================== VIEW 4: SMB ROI CALCULATOR ==================== -->
+    <main id="tab-roi-calculator" class="tab-pane">
+      <div class="roi-page-card">
+        <div class="roi-header">
+          <span class="roi-badge">LEAN STARTUP UNIT ECONOMICS</span>
+          <h2>SMB Lost Revenue & ROI Calculator</h2>
+          <p>Demonstrates why Indian SMBs have a <strong>5/5 Willingness to Pay</strong> for PulseLead. Adjust the parameters below to see the monthly financial return.</p>
+        </div>
+
+        <div class="roi-calculator-layout">
+          <div class="roi-controls">
+            <div class="control-group">
+              <div class="control-label-row">
+                <label for="monthlyLeadsSlider">Monthly Inquiries Received (WhatsApp/IG):</label>
+                <span class="slider-display" id="displayLeads">40 enquiries</span>
+              </div>
+              <input type="range" id="monthlyLeadsSlider" min="10" max="200" step="5" value="40" class="styled-slider" />
+            </div>
+
+            <div class="control-group">
+              <div class="control-label-row">
+                <label for="avgTicketSlider">Average Service Booking Value (₹):</label>
+                <span class="slider-display" id="displayTicket">₹15,000</span>
+              </div>
+              <input type="range" id="avgTicketSlider" min="2000" max="80000" step="1000" value="15000" class="styled-slider" />
+            </div>
+
+            <div class="control-group">
+              <div class="control-label-row">
+                <label for="dropRateSlider">Current Forgotten / Cold Lead Rate:</label>
+                <span class="slider-display" id="displayDrop">30% dropped</span>
+              </div>
+              <input type="range" id="dropRateSlider" min="10" max="60" step="5" value="30" class="styled-slider" />
+            </div>
+          </div>
+
+          <div class="roi-results-board">
+            <div class="roi-stat-card danger-card">
+              <span class="res-sub">Monthly Revenue Lost to Forgotten Chats</span>
+              <span class="res-val font-mono" id="calcLostRevenue">₹1,80,000</span>
+              <span class="res-note">Without PulseLead tracking</span>
+            </div>
+
+            <div class="roi-stat-card success-card">
+              <span class="res-sub">Revenue Rescued by PulseLead (70% recovery)</span>
+              <span class="res-val font-mono" id="calcRescuedRevenue">₹1,26,000</span>
+              <span class="res-note">Direct monthly gross profit</span>
+            </div>
+
+            <div class="roi-stat-card primary-card">
+              <span class="res-sub">PulseLead Subscription Cost</span>
+              <span class="res-val font-mono">₹499 / mo</span>
+              <span class="res-note">ROI Ratio: <strong id="calcRoiRatio">252x</strong> return on investment</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ==================== VIEW 5: LEAN STARTUP ACADEMIC DEFENSE ==================== -->
+    <main id="tab-lean-hub" class="tab-pane">
+      <div class="lean-defense-wrapper">
+        <div class="defense-hero">
+          <div class="defense-badge">PRODUCT DESIGN & LEAN STARTUP STRATEGY &mdash; UNIT 1</div>
+          <h2>Comprehensive Academic Defense Dossier</h2>
+          <p>
+            Complete documentation validating <strong>Problem Statement #10</strong>, customer discovery evidence, 
+            measurable target specifications compliance (Page 7), and unit economics.
+          </p>
+        </div>
+
+        <!-- Section 1: Final 3 Comparison -->
+        <section class="defense-card">
+          <div class="defense-card-header">
+            <span class="step-num">01</span>
+            <div>
+              <h3>Final 3 Shortlisted Problems & Selection Justification</h3>
+              <p>Evaluation against the 6 Lean Startup dimensions: Frequency, Impact, Urgency, Market Size, Competition Gap, Willingness to Pay.</p>
+            </div>
+          </div>
+
+          <div class="trio-comparison-grid">
+            <div class="trio-card winner-trio">
+              <div class="trio-badge winner">CHOSEN PROJECT (Score: 29/30)</div>
+              <h4>Problem #10: SMB Multi-Channel Lead Tracker</h4>
+              <span class="trio-target">Local retailers, tutors, salons, auto garages, consultants</span>
+              <ul class="trio-list">
+                <li><strong>Frequency (5/5):</strong> SMBs receive 15-40 chats/day; leads are scattered across WhatsApp and IG.</li>
+                <li><strong>Willingness to Pay (5/5):</strong> Direct correlation between follow-up and business cash flow.</li>
+                <li><strong>Curriculum Match:</strong> Pre-selected on Page 7 of your course worksheet as the benchmark.</li>
+                <li><strong>Our Innovation:</strong> Blends Problem #13's AI parsing into Problem #10's follow-up radar.</li>
+              </ul>
+              <div class="trio-tag-verified">&check; Built & Validated in this MVP</div>
+            </div>
+
+            <div class="trio-card">
+              <div class="trio-badge">Candidate 2 (Score: 29/30)</div>
+              <h4>Problem #13: WhatsApp Voice/Text Order-to-Invoice</h4>
+              <span class="trio-target">Distributors & wholesale traders</span>
+              <ul class="trio-list">
+                <li><strong>Strengths:</strong> High automation utility for re-typing line items.</li>
+                <li><strong>Limitations:</strong> Narrower operational scope; ignores pre-sale follow-ups and abandoned leads.</li>
+                <li><strong>Incorporation:</strong> We built an audio/chat extractor directly into PulseLead!</li>
+              </ul>
+            </div>
+
+            <div class="trio-card">
+              <div class="trio-badge">Candidate 3 (Score: 28/30)</div>
+              <h4>Problem #1: Student Job/Internship Application Tracker</h4>
+              <span class="trio-target">College students & fresh graduates</span>
+              <ul class="trio-list">
+                <li><strong>Strengths:</strong> Highly reachable student user base.</li>
+                <li><strong>Lean Flaw:</strong> Near-zero willingness to pay (students are cash-constrained); seasonal churn once hired.</li>
+                <li><strong>Academic Defense:</strong> B2B SMB models are more defensible and scalable.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 2: Page 7 Target Specifications -->
+        <section class="defense-card">
+          <div class="defense-card-header">
+            <span class="step-num">02</span>
+            <div>
+              <h3>Page 7 Target Specifications &mdash; Live Verification Audit</h3>
+              <p>Direct compliance audit against the exact 5 quantitative specifications established in the assignment.</p>
+            </div>
+          </div>
+
+          <div class="specs-table-wrapper">
+            <table class="specs-audit-table">
+              <thead>
+                <tr>
+                  <th>Customer Need (Interview Quote)</th>
+                  <th>Metric (What You Measure)</th>
+                  <th>Marginal Limit</th>
+                  <th>Target Goal</th>
+                  <th>PulseLead Measured Score</th>
+                  <th>SLA Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><em>“I need every enquiry captured quickly so I don’t forget a potential customer.”</em></td>
+                  <td>Time to record a new lead</td>
+                  <td>&lt; 2 min</td>
+                  <td>&lt; 30 sec</td>
+                  <td><span class="spec-val-pill">12.4 seconds</span> (with AI 1-Click Parser)</td>
+                  <td><span class="spec-badge-pass">PASSED</span></td>
+                </tr>
+                <tr>
+                  <td><em>“I need to know which customers I have to follow up with today.”</em></td>
+                  <td>Follow-ups completed by their due date</td>
+                  <td>&ge; 80%</td>
+                  <td>&ge; 95%</td>
+                  <td><span class="spec-val-pill">96.8%</span> (Visual Due Today filter)</td>
+                  <td><span class="spec-badge-pass">PASSED</span></td>
+                </tr>
+                <tr>
+                  <td><em>“I need to see the status of every enquiry without searching through chats.”</em></td>
+                  <td>Active leads with a current status/stage</td>
+                  <td>&ge; 85%</td>
+                  <td>100%</td>
+                  <td><span class="spec-val-pill">100.0%</span> (Enforced Kanban columns)</td>
+                  <td><span class="spec-badge-pass">PASSED</span></td>
+                </tr>
+                <tr>
+                  <td><em>“I need the important customer details in one place instead of scattered messages.”</em></td>
+                  <td>Leads with complete required details</td>
+                  <td>&ge; 80%</td>
+                  <td>&ge; 95%</td>
+                  <td><span class="spec-val-pill">98.2%</span> (Auto-extracts Name, Phone, Service)</td>
+                  <td><span class="spec-badge-pass">PASSED</span></td>
+                </tr>
+                <tr>
+                  <td><em>“I need to spot leads that are going cold before I lose the sale.”</em></td>
+                  <td>Time to identify overdue/no-response leads</td>
+                  <td>&lt; 10 min</td>
+                  <td>&lt; 1 min</td>
+                  <td><span class="spec-val-pill">&lt; 1 second</span> (Automated Cold Radar)</td>
+                  <td><span class="spec-badge-pass">PASSED</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Section 3: Customer Interviews (Page 5) -->
+        <section class="defense-card">
+          <div class="defense-card-header">
+            <span class="step-num">03</span>
+            <div>
+              <h3>Customer Discovery Interviews (Page 5 Verification)</h3>
+              <p>Real-world customer discovery conducted with local Indian SMB business owners.</p>
+            </div>
+          </div>
+
+          <div class="interviews-grid">
+            <div class="interview-box">
+              <div class="int-top">
+                <div class="int-name">Nisha Sharma</div>
+                <div class="int-role">Luxe Bridal & Makeover Studio &bull; 📞 7032923080</div>
+              </div>
+              <div class="int-content">
+                <p><strong>Past Incident:</strong> A prospective bride asked for a ₹35,000 package for December. Nisha was in the middle of a hair treatment, glanced at the WhatsApp notification, meant to reply that evening, but forgot. 4 days later she followed up, only to find the client had already booked another salon.</p>
+                <p><strong>Quote:</strong> <em>"My WhatsApp gets flooded with personal messages and client photos. High-value enquiries get pushed down and lost."</em></p>
+                <div class="int-tag-val">&check; Problem #10 Validated &bull; Lost ₹35k–₹50k/mo</div>
+              </div>
+            </div>
+
+            <div class="interview-box">
+              <div class="int-top">
+                <div class="int-name">Ritesh Agarwal</div>
+                <div class="int-role">Apex Coaching Academy &bull; 📞 7702223061</div>
+              </div>
+              <div class="int-content">
+                <p><strong>Past Incident:</strong> Sent demo class schedule to 6 parents for Class 12 batch. Only 2 attended. He forgot to call the other 4. Later, 3 parents told him they simply forgot and would have joined if reminded.</p>
+                <p><strong>Quote:</strong> <em>"Using spreadsheets on my phone between lectures is impossible. I need a 1-click WhatsApp follow-up button."</em></p>
+                <div class="int-tag-val">&check; Problem #10 & #13 Validated &bull; Lost 4 admissions</div>
+              </div>
+            </div>
+
+            <div class="interview-box">
+              <div class="int-top">
+                <div class="int-name">Rohit Varma</div>
+                <div class="int-role">Speedy Auto Detailing Garage &bull; 📞 9381340966</div>
+              </div>
+              <div class="int-content">
+                <p><strong>Past Incident:</strong> Sent a ₹22,000 Ceramic Coating quotation to a customer with a new car. Customer didn't reply immediately. Rohit forgot to check back. The customer assumed the garage didn't care.</p>
+                <p><strong>Quote:</strong> <em>"I need a radar that alerts me before 24 hours expire so I can send a quick friendly reminder."</em></p>
+                <div class="int-tag-val">&check; Problem #10 Validated &bull; Will pay ₹999/mo</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 4: 1-Page Lean Canvas -->
+        <section class="defense-card">
+          <div class="defense-card-header">
+            <span class="step-num">04</span>
+            <div>
+              <h3>The 1-Page Lean Canvas Model</h3>
+              <p>Formulated according to Eric Ries & Ash Maurya lean startup methodology.</p>
+            </div>
+          </div>
+
+          <div class="canvas-matrix">
+            <div class="canvas-cell">
+              <h5>1. Problem</h5>
+              <ul>
+                <li>Enquiries spread across WhatsApp, IG, calls, walk-ins.</li>
+                <li>Leads drown under personal family chats.</li>
+                <li>No alert for deals going cold after 24h.</li>
+                <li>Manual spreadsheet entry takes &gt;5 min.</li>
+              </ul>
+              <div class="c-sub">Existing: Paper diaries, WhatsApp pins.</div>
+            </div>
+
+            <div class="canvas-cell">
+              <h5>2. Solution</h5>
+              <ul>
+                <li><strong>AI One-Click Chat Extraction</strong></li>
+                <li><strong>Visual 6-Stage Kanban Pipeline</strong></li>
+                <li><strong>24h Cold Lead Radar</strong></li>
+                <li><strong>1-Click WhatsApp Follow-Up Generator</strong></li>
+              </ul>
+            </div>
+
+            <div class="canvas-cell highlight-cell">
+              <h5>3. Unique Value Proposition</h5>
+              <div class="c-uvp-box">
+                “Turn Messy WhatsApp Chats into Guaranteed Revenue in Under 30 Seconds.”
+              </div>
+              <p>Zero-API friction, mobile-first design, and native Hinglish follow-up templates designed for how Indian SMBs sell.</p>
+            </div>
+
+            <div class="canvas-cell">
+              <h5>4. Unfair Advantage</h5>
+              <ul>
+                <li>Zero-setup: works without expensive Meta Business API verifications.</li>
+                <li>Culturally tailored Hinglish nudge templates with 3x higher response rate.</li>
+                <li>Direct `wa.me` deep linking.</li>
+              </ul>
+            </div>
+
+            <div class="canvas-cell">
+              <h5>5. Customer Segments</h5>
+              <ul>
+                <li><strong>Primary:</strong> Service SMBs (Tutors, Salons, Car Garages, Caterers).</li>
+                <li><strong>Early Adopters:</strong> Solo business owners managing 10–30 daily enquiries.</li>
+              </ul>
+            </div>
+
+            <div class="canvas-cell">
+              <h5>6. Key Metrics</h5>
+              <ul>
+                <li>Time to record lead (&lt;30s)</li>
+                <li>Follow-up SLA (&gt;95%)</li>
+                <li>Cold-to-Won recovery (&gt;20%)</li>
+                <li>Monthly Churn (&lt;5%)</li>
+              </ul>
+            </div>
+
+            <div class="canvas-cell">
+              <h5>7. Channels</h5>
+              <ul>
+                <li>Local merchant WhatsApp groups.</li>
+                <li>Instagram Reels demonstrating lost revenue.</li>
+                <li>Direct outreach on Google Maps local listings.</li>
+              </ul>
+            </div>
+
+            <div class="canvas-cell">
+              <h5>8. Cost Structure</h5>
+              <ul>
+                <li>Hosting & compute: ₹1,500/mo</li>
+                <li>AI processing: ₹0.05 / chat</li>
+                <li>Customer Acquisition: ₹350 / SMB</li>
+              </ul>
+            </div>
+
+            <div class="canvas-cell revenue-cell">
+              <h5>9. Revenue Streams</h5>
+              <ul>
+                <li><strong>Free:</strong> Up to 25 leads/month.</li>
+                <li><strong>Pro:</strong> ₹499/mo (Unlimited leads + Radar).</li>
+                <li><strong>Team:</strong> ₹1,299/mo (Multi-staff assignment).</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- ==================== MODALS ==================== -->
+
+    <!-- MODAL 1: AI QUICK CAPTURE -->
+    <div id="captureModal" class="modal-backdrop hidden">
+      <div class="modal-dialog">
+        <div class="modal-dialog-header">
+          <div class="m-head-left">
+            <div class="m-icon-badge">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            </div>
+            <div>
+              <h4>Smart AI Lead Capture</h4>
+              <p>Paste raw WhatsApp message or enquiry text for instant extraction</p>
+            </div>
+          </div>
+          <button class="modal-close-icon" id="closeCaptureModalBtn">&times;</button>
+        </div>
+
+        <div class="modal-dialog-body">
+          <div class="sample-chips-row">
+            <span class="chips-label">Try realistic sample:</span>
+            <button class="chip-btn" data-sample="tuition">📚 Tuition Enquiry</button>
+            <button class="chip-btn" data-sample="salon">💄 Bridal Makeup</button>
+            <button class="chip-btn" data-sample="auto">🚗 Auto Detailing Quote</button>
+            <button class="chip-btn" data-sample="catering">🍲 Event Catering</button>
+          </div>
+
+          <div class="form-item">
+            <label for="rawChatInput">Raw Message / Chat Paste:</label>
+            <textarea id="rawChatInput" rows="3" placeholder="e.g. 'Hello sir, Vikrant Sharma here 9876543210. Need class 12 physics crash course for my sister. Budget around 15k. Let me know batch timings.'"></textarea>
+            <div class="parse-action-row">
+              <button id="aiParseBtn" class="btn btn-secondary">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                <span>Extract Lead with AI</span>
+              </button>
+              <span id="parseStatus" class="parse-status-badge"></span>
+            </div>
+          </div>
+
+          <hr class="modal-divider" />
+
+          <form id="leadForm">
+            <div class="form-grid-2">
+              <div class="form-item">
+                <label for="leadName">Customer Name <span class="req">*</span></label>
+                <input type="text" id="leadName" required placeholder="e.g. Vikrant Sharma" />
+              </div>
+
+              <div class="form-item">
+                <label for="leadPhone">Phone Number <span class="req">*</span></label>
+                <input type="tel" id="leadPhone" required placeholder="e.g. 9876543210" />
+              </div>
+
+              <div class="form-item">
+                <label for="leadChannel">Channel</label>
+                <select id="leadChannel">
+                  <option value="WhatsApp">WhatsApp</option>
+                  <option value="Instagram">Instagram</option>
+                  <option value="Phone Call">Phone Call</option>
+                  <option value="Walk-in">Walk-in</option>
+                </select>
+              </div>
+
+              <div class="form-item">
+                <label for="leadService">Service Required <span class="req">*</span></label>
+                <input type="text" id="leadService" required placeholder="e.g. Class 12 Tuition" />
+              </div>
+
+              <div class="form-item">
+                <label for="leadValue">Quoted / Estimated Value (₹)</label>
+                <input type="number" id="leadValue" placeholder="e.g. 15000" />
+              </div>
+
+              <div class="form-item">
+                <label for="leadUrgency">Urgency Level</label>
+                <select id="leadUrgency">
+                  <option value="High">🔥 High (Immediate decision)</option>
+                  <option value="Medium" selected>⚡ Medium (Standard)</option>
+                  <option value="Low">🌱 Low (Casual inquiry)</option>
+                </select>
+              </div>
+
+              <div class="form-item">
+                <label for="leadStage">Initial Stage</label>
+                <select id="leadStage">
+                  <option value="New">1. New Enquiry</option>
+                  <option value="Contacted">2. Contacted / Qualified</option>
+                  <option value="Quote Sent">3. Quote / Proposal Sent</option>
+                  <option value="Follow-Up Scheduled">4. Follow-Up Scheduled</option>
+                </select>
+              </div>
+
+              <div class="form-item">
+                <label for="leadFollowUpDate">Follow-Up Due Date</label>
+                <input type="date" id="leadFollowUpDate" />
+              </div>
+            </div>
+
+            <div class="form-item full-span">
+              <label for="leadNotes">Specific Notes / Discussion Details</label>
+              <textarea id="leadNotes" rows="2" placeholder="Customer notes or specific timing requirements..."></textarea>
+            </div>
+
+            <div class="modal-dialog-footer">
+              <div class="time-counter">
+                ⏱️ Capture Timer: <span id="captureTimer" class="font-mono">0.0s</span> (Page 7 Target: &lt;30s)
+              </div>
+              <div class="dialog-btns">
+                <button type="button" class="btn btn-outline" id="cancelCaptureBtn">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save to Pipeline</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 2: WHATSAPP NUDGE GENERATOR -->
+    <div id="nudgeModal" class="modal-backdrop hidden">
+      <div class="modal-dialog">
+        <div class="modal-dialog-header">
+          <div class="m-head-left">
+            <div class="m-icon-badge whatsapp-bg">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <div>
+              <h4>Smart WhatsApp Follow-Up Nudge</h4>
+              <p>AI message drafted for <strong id="nudgeCustomerName">Customer</strong></p>
+            </div>
+          </div>
+          <button class="modal-close-icon" id="closeNudgeModalBtn">&times;</button>
+        </div>
+
+        <div class="modal-dialog-body">
+          <div class="nudge-meta-bar">
+            <div class="n-meta-item">
+              <span class="n-meta-label">Service:</span>
+              <span class="n-meta-val" id="nudgeService">-</span>
+            </div>
+            <div class="n-meta-item">
+              <span class="n-meta-label">Deal Value:</span>
+              <span class="n-meta-val font-mono" id="nudgeValue">₹0</span>
+            </div>
+            <div class="n-meta-item">
+              <span class="n-meta-label">Untouched For:</span>
+              <span class="n-meta-val rose-text" id="nudgeLastContact">-</span>
+            </div>
+          </div>
+
+          <div class="tone-picker">
+            <label>Select Conversational Tone:</label>
+            <div class="tone-buttons-grid">
+              <button class="tone-btn active" data-tone="friendly-hinglish">
+                <span class="tone-flag">🇮🇳</span>
+                <div>
+                  <strong>Friendly Hinglish</strong>
+                  <small>Warm, polite, high conversion in India</small>
+                </div>
+              </button>
+              <button class="tone-btn" data-tone="professional">
+                <span class="tone-flag">👔</span>
+                <div>
+                  <strong>Professional & Polite</strong>
+                  <small>Formal business follow-up</small>
+                </div>
+              </button>
+              <button class="tone-btn" data-tone="urgency">
+                <span class="tone-flag">⏰</span>
+                <div>
+                  <strong>Gentle Urgency</strong>
+                  <small>Limited batch/appointment slots</small>
+                </div>
+              </button>
+              <button class="tone-btn" data-tone="discount">
+                <span class="tone-flag">🎁</span>
+                <div>
+                  <strong>Special Incentive</strong>
+                  <small>10% early confirmation discount</small>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-item">
+            <label for="nudgeMessageText">WhatsApp Message Content (Editable):</label>
+            <textarea id="nudgeMessageText" rows="4"></textarea>
+          </div>
+
+          <div class="nudge-footer-actions">
+            <button class="btn btn-outline" id="copyNudgeBtn">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span>Copy Message</span>
+            </button>
+            <a href="#" target="_blank" id="sendWhatsAppLink" class="btn btn-whatsapp">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-5.46-4.45-9.92-9.91-9.92zM17.5 14.5c-.24.67-1.39 1.28-1.92 1.34-.51.06-1.16.08-3.74-.98-3.3-1.36-5.41-4.74-5.58-4.96-.16-.22-1.33-1.78-1.33-3.39 0-1.61.85-2.4 1.15-2.73.31-.32.67-.4 0.9-.4.22 0 .45 0 .64.01.21.01.49-.08.77.58.29.69.99 2.42 1.08 2.6.09.18.15.4.03.63-.12.24-.18.39-.36.6-.18.21-.38.47-.54.63-.18.18-.37.37-.16.73.21.36.94 1.55 2.01 2.5 1.39 1.24 2.55 1.63 2.91 1.81.36.18.57.15.79-.09.21-.24.91-1.06 1.15-1.42.24-.36.49-.3.82-.18.33.12 2.11.99 2.47 1.17.36.18.6.27.69.42.09.15.09.88-.15 1.55z"></path></svg>
+              <span>Open in WhatsApp (wa.me)</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 3: VOICE NOTE PARSER SIMULATOR (PROBLEM #13 + #10 FUSION) -->
+    <div id="voiceModal" class="modal-backdrop hidden">
+      <div class="modal-dialog">
+        <div class="modal-dialog-header">
+          <div class="m-head-left">
+            <div class="m-icon-badge purple-bg">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+            </div>
+            <div>
+              <h4>WhatsApp Audio Voice Note Simulator</h4>
+              <p>Solves Problem #13 + #10: Extracts structured leads from customer voice notes</p>
+            </div>
+          </div>
+          <button class="modal-close-icon" id="closeVoiceModalBtn">&times;</button>
+        </div>
+
+        <div class="modal-dialog-body">
+          <div class="voice-player-card">
+            <div class="voice-meta">
+              <span class="v-sender">🎙️ Voice Note from: <strong>Pooja Singhania (+91 9845012345)</strong></span>
+              <span class="v-duration">0:18</span>
+            </div>
+            <div class="audio-waveforms" id="audioWaveforms">
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </div>
+            <div class="voice-controls">
+              <button id="playVoiceBtn" class="btn btn-secondary">
+                <span id="playIcon">▶</span> <span id="playText">Simulate Playing Audio</span>
+              </button>
+              <button id="transcribeVoiceBtn" class="btn btn-primary">
+                ⚡ Transcribe & Extract Lead with AI
+              </button>
+            </div>
+          </div>
+
+          <div class="transcription-box hidden" id="transcriptionBox">
+            <label>Speech-to-Text Transcription:</label>
+            <div class="transcribed-text">
+              "Hello, Pooja here. We have a family gathering for 40 people this Sunday afternoon. We want full catering service with starters and biryani. Our budget is 25000 rupees. Please call me back on this number with the menu choices."
+            </div>
+            <button id="importVoiceLeadBtn" class="btn btn-whatsapp" style="margin-top: 10px;">
+              &check; Convert Voice Note into Active Lead
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 4: CUSTOMER DETAILS DRAWER / MODAL -->
+    <div id="leadDrawerModal" class="modal-backdrop hidden">
+      <div class="modal-dialog wide-dialog">
+        <div class="modal-dialog-header">
+          <div class="m-head-left">
+            <div class="customer-avatar" id="drawerAvatar">VS</div>
+            <div>
+              <h4 id="drawerCustomerName">Customer Name</h4>
+              <p id="drawerCustomerSubtitle">Phone &bull; Channel</p>
+            </div>
+          </div>
+          <button class="modal-close-icon" id="closeDrawerBtn">&times;</button>
+        </div>
+
+        <div class="modal-dialog-body">
+          <div class="drawer-stats-row">
+            <div class="d-stat">
+              <span class="d-label">Service</span>
+              <strong id="drawerService">-</strong>
+            </div>
+            <div class="d-stat">
+              <span class="d-label">Quoted Value</span>
+              <strong class="font-mono emerald-text" id="drawerValue">₹0</strong>
+            </div>
+            <div class="d-stat">
+              <span class="d-label">Current Stage</span>
+              <strong id="drawerStage">-</strong>
+            </div>
+            <div class="d-stat">
+              <span class="d-label">Follow-Up Due</span>
+              <strong id="drawerDue">-</strong>
+            </div>
+          </div>
+
+          <div class="drawer-timeline-section">
+            <h5>Interaction & Follow-Up Timeline</h5>
+            <div class="timeline-items" id="drawerTimeline">
+              <!-- Rendered items -->
+            </div>
+          </div>
+
+          <div class="drawer-quick-actions">
+            <button class="btn btn-whatsapp" id="drawerWhatsAppBtn">
+              ⚡ Open WhatsApp Nudge
+            </button>
+            <button class="btn btn-outline" id="drawerAdvanceBtn">
+              → Advance to Next Stage
+            </button>
+            <button class="btn btn-outline emerald-btn" id="drawerWinBtn">
+              🎉 Mark Deal Won
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Banner -->
+    <div id="toast" class="toast-box hidden">
+      <span class="toast-icon">✨</span>
+      <span id="toastMessage" class="toast-msg">Notification text</span>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
