@@ -1,7 +1,11 @@
-// PulseLead SMB — Modern Lead Inbox & Automated Follow-Up Radar
-// Product Design & Lean Startup Strategy — Unit 1 Submission
+// PulseLead SMB — Modern Obsidian Dark Frontend Engine
+// Synchronized with Python REST Backend (Port 8080) & SQLite Database
+// Product Design & Lean Startup Strategy — Unit 1 Project
 
-// Initial Seed Data tailored for Indian SMBs
+const API_BASE = "http://localhost:8080/api";
+let backendAvailable = false;
+
+// Fallback Seed Data (used if backend is offline or on GitHub Pages)
 const SEED_LEADS = [
   {
     id: "lead-1",
@@ -16,7 +20,7 @@ const SEED_LEADS = [
     followUpDue: getTodayOffset(0),
     notes: "Parent looking for CBSE board prep + weekend doubt clearing sessions.",
     history: [
-      "10:15 AM - Received WhatsApp enquiry",
+      "10:15 AM - WhatsApp inquiry received",
       "10:16 AM - Auto-extracted by PulseLead AI (12.4s)"
     ]
   },
@@ -34,8 +38,7 @@ const SEED_LEADS = [
     notes: "Wedding date Dec 18. Sent quote sheet; waiting for bride's confirmation.",
     history: [
       "Yesterday 11:00 AM - Inquired via Instagram DM",
-      "Yesterday 11:30 AM - Sent package PDF brochure on WhatsApp",
-      "Yesterday 02:00 PM - Quoted ₹32,000 package. No reply since 29h."
+      "Yesterday 02:00 PM - Sent ₹32,000 package. Stale for 29h."
     ]
   },
   {
@@ -51,8 +54,7 @@ const SEED_LEADS = [
     followUpDue: getTodayOffset(0),
     notes: "Honda City owner. Asked if water spots will be 100% removed.",
     history: [
-      "Yesterday 09:30 AM - Walk-in consultation at garage",
-      "Yesterday 12:00 PM - Sent photos of past Honda City ceramic work",
+      "Yesterday 09:30 AM - Garage consultation",
       "Scheduled follow-up due today"
     ]
   },
@@ -69,8 +71,8 @@ const SEED_LEADS = [
     followUpDue: getTodayOffset(1),
     notes: "Requires South & North Indian fusion buffet for tech symposium.",
     history: [
-      "09:45 AM - Phone discussion with HR manager",
-      "10:30 AM - Menu PDF and price list dispatched via WhatsApp"
+      "09:45 AM - Call with HR manager",
+      "10:30 AM - Menu PDF dispatched via WhatsApp"
     ]
   },
   {
@@ -84,10 +86,10 @@ const SEED_LEADS = [
     stage: "Quote Sent",
     createdHoursAgo: 26, // >24h => Cold Radar
     followUpDue: getTodayOffset(-1),
-    notes: "Clothing boutique owner looking to move from Instagram orders to automated cart.",
+    notes: "Clothing boutique owner looking to move from Instagram to automated cart.",
     history: [
-      "Yesterday 01:15 PM - Website audit conducted",
-      "Yesterday 03:00 PM - Proposal & scope document submitted"
+      "Yesterday 01:15 PM - Audit conducted",
+      "Yesterday 03:00 PM - Proposal submitted"
     ]
   },
   {
@@ -104,8 +106,7 @@ const SEED_LEADS = [
     notes: "Booked slot for Saturday 11 AM. Advance token ₹2,000 paid via GPay.",
     history: [
       "11:00 AM - Walk-in enquiry at studio",
-      "11:20 AM - Consultation with senior stylist",
-      "11:45 AM - Confirmed booking & advance paid via GPay 🎉"
+      "11:45 AM - Confirmed booking & paid via GPay 🎉"
     ]
   },
   {
@@ -122,7 +123,7 @@ const SEED_LEADS = [
     notes: "Enrolled in morning batch. Course materials dispatched.",
     history: [
       "Yesterday 04:00 PM - Attended demo lecture",
-      "Yesterday 06:30 PM - Parent confirmed admission & tuition fee cleared 🎉"
+      "Yesterday 06:30 PM - Enrollment confirmed & fee cleared 🎉"
     ]
   },
   {
@@ -144,6 +145,51 @@ const SEED_LEADS = [
   }
 ];
 
+// WhatsApp Thread Conversations Database for Dual-Pane Hub
+const WA_THREADS = {
+  vikrant: {
+    name: "Vikrant Sharma",
+    phone: "9876543210",
+    avatar: "VS",
+    avatarClass: "",
+    service: "Class 12 Maths & Physics Tuition",
+    budget: 14000,
+    messages: [
+      { sender: "inbound", text: "Namaste sir! Mera naam Vikrant Sharma hai. Mujhe class 12 physics aur maths crash course ke baare me puchna tha.", time: "10:14 AM" },
+      { sender: "inbound", text: "Meri sister CBSE board exam de rahi hai. Hamara budget around 14000 hai. Kya weekend doubt classes available hain?", time: "10:15 AM" },
+      { sender: "outbound", text: "Hello Vikrant ji! Yes, we have dedicated CBSE Class 12 batches with senior faculty. Saturday and Sunday 10 AM to 1 PM. Let me share the detailed schedule with you.", time: "10:16 AM" }
+    ]
+  },
+  priya: {
+    name: "Priya Nair",
+    phone: "9988776655",
+    avatar: "PN",
+    avatarClass: "pink",
+    service: "Bridal HD Makeup & Hair Styling",
+    budget: 32000,
+    messages: [
+      { sender: "inbound", text: "Hi Luxe Studio! Priya here. Looking for bridal makeup packages for December 18 wedding reception.", time: "Yesterday 11:00 AM" },
+      { sender: "outbound", text: "Hello Priya! Congratulations! We have HD Bridal & Airbrush packages. Sending you our portfolio brochure right away.", time: "Yesterday 11:30 AM" },
+      { sender: "outbound", text: "Quoted ₹32,000 for bride + 2 bridesmaids. Let us know if you would like to book the slot!", time: "Yesterday 02:00 PM" }
+    ]
+  },
+  amit: {
+    name: "Amitabh Patel",
+    phone: "9123456789",
+    avatar: "AP",
+    avatarClass: "blue",
+    service: "Ceramic Coating & Deep Interior Detailing",
+    budget: 18500,
+    messages: [
+      { sender: "inbound", text: "Hello Speedy Auto, Amitabh Patel here. Got a brand new Honda City white color.", time: "Yesterday 09:15 AM" },
+      { sender: "inbound", text: "Want 9H Ceramic coating with 3-year warranty and interior dry clean. How much will it cost?", time: "Yesterday 09:30 AM" },
+      { sender: "outbound", text: "Hi Amitabh! Our 9H Ceramic package is ₹18,500 including 3 coats, hydrophobic glass treatment, and free interior detailing.", time: "Yesterday 10:00 AM" }
+    ]
+  }
+};
+
+let currentWaThreadKey = "vikrant";
+
 // Helper to calculate date offsets (YYYY-MM-DD)
 function getTodayOffset(offsetDays) {
   const d = new Date();
@@ -153,80 +199,106 @@ function getTodayOffset(offsetDays) {
 
 // App State
 let leads = [];
-let currentFilter = "all";
 let searchQuery = "";
 let selectedTone = "friendly-hinglish";
 let activeNudgeLead = null;
 let activeDrawerLead = null;
 let captureStartTime = null;
 let captureTimerInterval = null;
-let isAudioPlaying = false;
 
-// Initialize on DOM Ready
-document.addEventListener("DOMContentLoaded", () => {
-  loadLeads();
+// Initialize
+document.addEventListener("DOMContentLoaded", async () => {
+  await checkBackendAndLoad();
   initEventListeners();
   initRoiCalculator();
   renderAll();
+  renderWaActiveThread();
 });
 
-// Load from LocalStorage or Seed Data
-function loadLeads() {
-  const stored = localStorage.getItem("pulselead_leads_v2");
-  if (stored) {
-    try {
-      leads = JSON.parse(stored);
-    } catch (e) {
-      leads = [...SEED_LEADS];
+// Check Python REST Backend or Fallback
+async function checkBackendAndLoad() {
+  try {
+    const res = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(1500) });
+    if (res.ok) {
+      backendAvailable = true;
+      document.getElementById("backendStatusText").innerText = "Python REST API • Port 8080";
+      const leadsRes = await fetch(`${API_BASE}/leads`);
+      leads = await leadsRes.json();
+      return;
     }
+  } catch (e) {
+    backendAvailable = false;
+  }
+
+  // Fallback to LocalStorage
+  document.getElementById("backendStatusText").innerText = "Client Engine (Offline Mode)";
+  const stored = localStorage.getItem("pulselead_dark_leads");
+  if (stored) {
+    try { leads = JSON.parse(stored); } catch (e) { leads = [...SEED_LEADS]; }
   } else {
     leads = [...SEED_LEADS];
-    saveLeads();
+    saveLeadsLocal();
   }
 }
 
-function saveLeads() {
-  localStorage.setItem("pulselead_leads_v2", JSON.stringify(leads));
+function saveLeadsLocal() {
+  localStorage.setItem("pulselead_dark_leads", JSON.stringify(leads));
 }
 
-// Reset Demo Data
-function resetDemoData() {
-  if (confirm("Reset all demo data back to default Indian SMB sample leads?")) {
-    leads = [...SEED_LEADS];
-    saveLeads();
-    renderAll();
-    showToast("✓ Demo leads reset to initial state");
+async function persistLeadChange(lead, method = "PUT") {
+  if (backendAvailable) {
+    try {
+      if (method === "PUT") {
+        await fetch(`${API_BASE}/leads/${lead.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(lead)
+        });
+      } else if (method === "POST") {
+        await fetch(`${API_BASE}/leads`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(lead)
+        });
+      }
+    } catch (e) {
+      console.warn("Backend sync failed; local state preserved.", e);
+    }
   }
+  saveLeadsLocal();
 }
 
 // Event Listeners
 function initEventListeners() {
-  // Navigation Tabs
-  document.querySelectorAll(".tab-btn").forEach(tab => {
-    tab.addEventListener("click", () => {
-      document.querySelectorAll(".tab-btn").forEach(t => t.classList.remove("active"));
-      document.querySelectorAll(".tab-pane").forEach(c => c.classList.remove("active"));
-      tab.classList.add("active");
-      const targetId = `tab-${tab.dataset.tab}`;
+  // Navigation Tabs in Left Sidebar
+  document.querySelectorAll(".side-nav-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".side-nav-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-view").forEach(v => v.classList.remove("active"));
+      btn.classList.add("active");
+      const targetId = `tab-${btn.dataset.tab}`;
       const targetEl = document.getElementById(targetId);
       if (targetEl) targetEl.classList.add("active");
+
+      // Update breadcrumb
+      const titleMap = {
+        "pipeline": "Lead Pipeline Kanban",
+        "cold-radar": "Cold Lead Radar & Recovery",
+        "chat-hub": "WhatsApp Business Chat Hub",
+        "list-view": "All Leads Database Ledger",
+        "roi-calculator": "SMB Lost Revenue & ROI Engine",
+        "lean-hub": "Unit 1 Academic Defense & Lean Canvas"
+      };
+      document.getElementById("pageTitleText").innerText = titleMap[btn.dataset.tab] || "PulseLead";
     });
   });
 
-  // Search & Filter
+  // Search input
   document.getElementById("searchInput").addEventListener("input", (e) => {
     searchQuery = e.target.value.toLowerCase();
     renderKanban();
     renderTable();
   });
-
-  document.getElementById("channelFilter").addEventListener("change", (e) => {
-    currentFilter = e.target.value;
-    renderKanban();
-    renderTable();
-  });
-
-  document.getElementById("resetDemoBtn").addEventListener("click", resetDemoData);
 
   // Business Selector
   document.getElementById("businessSelect").addEventListener("change", (e) => {
@@ -237,25 +309,12 @@ function initEventListeners() {
   document.getElementById("openCaptureModalBtn").addEventListener("click", openCaptureModal);
   document.getElementById("closeCaptureModalBtn").addEventListener("click", closeCaptureModal);
   document.getElementById("cancelCaptureBtn").addEventListener("click", closeCaptureModal);
-
   document.getElementById("closeNudgeModalBtn").addEventListener("click", closeNudgeModal);
   document.getElementById("closeDrawerBtn").addEventListener("click", closeDrawerModal);
 
-  // Voice Note Modal
-  document.getElementById("openVoiceModalBtn").addEventListener("click", () => {
-    document.getElementById("voiceModal").classList.remove("hidden");
-  });
-  document.getElementById("closeVoiceModalBtn").addEventListener("click", () => {
-    document.getElementById("voiceModal").classList.add("hidden");
-    stopAudioSimulation();
-  });
-  document.getElementById("playVoiceBtn").addEventListener("click", toggleAudioSimulation);
-  document.getElementById("transcribeVoiceBtn").addEventListener("click", transcribeAudioSimulation);
-  document.getElementById("importVoiceLeadBtn").addEventListener("click", importVoiceLead);
-
   // AI Extraction & Sample Buttons
   document.getElementById("aiParseBtn").addEventListener("click", runAiParser);
-  document.querySelectorAll(".chip-btn").forEach(chip => {
+  document.querySelectorAll(".chip-dark").forEach(chip => {
     chip.addEventListener("click", () => loadSampleChat(chip.dataset.sample));
   });
 
@@ -266,9 +325,9 @@ function initEventListeners() {
   document.getElementById("simulateLeadBtn").addEventListener("click", simulateIncomingLead);
 
   // Tone Buttons in Nudge Modal
-  document.querySelectorAll(".tone-btn").forEach(btn => {
+  document.querySelectorAll(".tone-card-dark").forEach(btn => {
     btn.addEventListener("click", () => {
-      document.querySelectorAll(".tone-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tone-card-dark").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       selectedTone = btn.dataset.tone;
       updateNudgeMessage();
@@ -284,6 +343,41 @@ function initEventListeners() {
 
   // Export CSV
   document.getElementById("exportCsvBtn").addEventListener("click", exportToCsv);
+
+  // Reset Demo Database
+  document.getElementById("resetDemoBtn").addEventListener("click", async () => {
+    if (confirm("Reset database to initial verified sample data?")) {
+      if (backendAvailable) {
+        await fetch(`${API_BASE}/reset`, { method: "POST" });
+        const res = await fetch(`${API_BASE}/leads`);
+        leads = await res.json();
+      } else {
+        leads = [...SEED_LEADS];
+        saveLeadsLocal();
+      }
+      renderAll();
+      showToast("✓ Database reset successfully");
+    }
+  });
+
+  // WhatsApp Thread items click
+  document.querySelectorAll(".wa-thread-item").forEach(item => {
+    item.addEventListener("click", () => {
+      document.querySelectorAll(".wa-thread-item").forEach(t => t.classList.remove("active"));
+      item.classList.add("active");
+      currentWaThreadKey = item.dataset.thread;
+      renderWaActiveThread();
+    });
+  });
+
+  // Extract from active WhatsApp chat
+  document.getElementById("extractFromActiveChatBtn").addEventListener("click", extractFromCurrentWaChat);
+
+  // Send quick reply in WhatsApp simulator
+  document.getElementById("sendQuickReplyBtn").addEventListener("click", sendWaQuickReply);
+  document.getElementById("waQuickReplyInput").addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendWaQuickReply();
+  });
 
   // Drawer Action Buttons
   document.getElementById("drawerWhatsAppBtn").addEventListener("click", () => {
@@ -337,12 +431,10 @@ function updateKPIs() {
 // Filter Helper
 function getFilteredLeads() {
   return leads.filter(lead => {
-    const matchesChannel = currentFilter === "all" || lead.channel === currentFilter;
-    const matchesSearch = !searchQuery || 
+    return !searchQuery || 
       lead.name.toLowerCase().includes(searchQuery) ||
       lead.phone.includes(searchQuery) ||
       lead.service.toLowerCase().includes(searchQuery);
-    return matchesChannel && matchesSearch;
   });
 }
 
@@ -372,7 +464,7 @@ function createLeadCardElement(lead) {
   const isDueToday = lead.stage !== "Closed Won" && lead.stage !== "Cold / Lost" && lead.followUpDue <= getTodayOffset(0);
 
   const card = document.createElement("div");
-  card.className = `lead-card-box ${isCold ? "card-stale" : ""} ${isDueToday ? "card-due-today" : ""}`;
+  card.className = `lead-card-dark ${isCold ? "card-stale" : ""} ${isDueToday ? "card-due-today" : ""}`;
   card.draggable = true;
   card.dataset.id = lead.id;
 
@@ -380,49 +472,48 @@ function createLeadCardElement(lead) {
     e.dataTransfer.setData("text/plain", lead.id);
   });
 
-  // Clicking card opens the detail drawer
   card.addEventListener("click", (e) => {
     if (e.target.closest("button") || e.target.closest("a")) return;
     openDrawerModal(lead.id);
   });
 
-  const channelClass = lead.channel.toLowerCase().replace(" ", "-");
+  const channelClass = (lead.channel || "whatsapp").toLowerCase().replace(" ", "-");
   const urgencyClass = (lead.urgency || "medium").toLowerCase();
 
   card.innerHTML = `
-    <div class="c-header">
-      <span class="c-customer">${lead.name}</span>
-      <span class="channel-tag ${channelClass}">${lead.channel}</span>
+    <div class="c-head-row">
+      <span class="c-name">${lead.name}</span>
+      <span class="channel-tag-dark ${channelClass}">${lead.channel}</span>
     </div>
 
-    <div class="c-service">${lead.service}</div>
+    <div class="c-service-text">${lead.service}</div>
 
-    <div class="c-financial-row">
-      <span class="c-price font-mono">₹${(lead.value || 0).toLocaleString("en-IN")}</span>
-      <span class="urgency-pill ${urgencyClass}">${lead.urgency || "Medium"}</span>
+    <div class="c-money-row">
+      <span class="c-deal-val font-mono">₹${(lead.value || 0).toLocaleString("en-IN")}</span>
+      <span class="urgency-dark-tag ${urgencyClass}">${lead.urgency || "Medium"}</span>
     </div>
 
-    ${lead.notes ? `<div class="c-notes">${lead.notes}</div>` : ""}
+    ${lead.notes ? `<div class="c-notes-snippet">${lead.notes}</div>` : ""}
 
-    <div class="c-time-status">
-      <span class="c-time ${isCold ? 'cold-warn' : ''}">
+    <div class="c-timing-row">
+      <span class="${isCold ? 'timing-warn' : ''}">
         ${isCold ? '⚠️ Untouched: ' : '⏱️ '}${lead.createdHoursAgo}h ago
       </span>
-      <span class="c-time">
+      <span>
         📅 Due: ${lead.followUpDue || "Today"}
       </span>
     </div>
 
-    <div class="c-card-actions">
-      <button class="btn-card nudge-action" onclick="openNudgeModal('${lead.id}')">
+    <div class="c-actions-grid">
+      <button class="btn-card-dark btn-nudge-dark" onclick="openNudgeModal('${lead.id}')">
         <span>⚡ WhatsApp</span>
       </button>
       ${lead.stage !== 'Closed Won' ? `
-        <button class="btn-card win-action" onclick="markLeadWon('${lead.id}')" title="Mark as Won">
+        <button class="btn-card-dark btn-win-dark" onclick="markLeadWon('${lead.id}')" title="Mark as Won">
           <span>🎉 Won</span>
         </button>
       ` : ''}
-      <button class="btn-card" onclick="advanceLeadStage('${lead.id}')" title="Move to next stage">
+      <button class="btn-card-dark" onclick="advanceLeadStage('${lead.id}')" title="Move to next stage">
         <span>→ Next</span>
       </button>
     </div>
@@ -431,19 +522,23 @@ function createLeadCardElement(lead) {
   return card;
 }
 
-// Drag and Drop Handling
+// Drag & Drop
 window.handleDragOver = function(e) {
   e.preventDefault();
 };
 
-window.handleDrop = function(e, targetStage) {
+window.handleDrop = async function(e, targetStage) {
   e.preventDefault();
   const leadId = e.dataTransfer.getData("text/plain");
   const lead = leads.find(l => l.id === leadId);
   if (lead && lead.stage !== targetStage) {
     lead.stage = targetStage;
-    lead.history.push(`${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - Moved to "${targetStage}" stage`);
-    
+    const historyMsg = `${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - Moved to "${targetStage}"`;
+    lead.history = lead.history || [];
+    lead.history.push(historyMsg);
+
+    await persistLeadChange({ id: lead.id, stage: targetStage, historyItem: historyMsg });
+
     if (targetStage === "Closed Won") {
       triggerConfetti();
       showToast(`🎉 CONGRATS! Won ₹${lead.value.toLocaleString("en-IN")} deal with ${lead.name}!`);
@@ -451,13 +546,12 @@ window.handleDrop = function(e, targetStage) {
       showToast(`Lead moved to "${targetStage}"`);
     }
 
-    saveLeads();
     renderAll();
   }
 };
 
 // Advance Stage Button
-window.advanceLeadStage = function(leadId) {
+window.advanceLeadStage = async function(leadId) {
   const lead = leads.find(l => l.id === leadId);
   if (!lead) return;
 
@@ -466,8 +560,12 @@ window.advanceLeadStage = function(leadId) {
 
   if (currentIndex >= 0 && currentIndex < stageOrder.length - 1) {
     lead.stage = stageOrder[currentIndex + 1];
-    lead.history.push(`${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - Advanced to "${lead.stage}"`);
-    
+    const historyMsg = `${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - Advanced to "${lead.stage}"`;
+    lead.history = lead.history || [];
+    lead.history.push(historyMsg);
+
+    await persistLeadChange({ id: lead.id, stage: lead.stage, historyItem: historyMsg });
+
     if (lead.stage === "Closed Won") {
       triggerConfetti();
       showToast(`🎉 Deal WON: ₹${lead.value.toLocaleString("en-IN")} with ${lead.name}!`);
@@ -475,23 +573,25 @@ window.advanceLeadStage = function(leadId) {
       showToast(`✓ Advanced ${lead.name} to "${lead.stage}"`);
     }
 
-    saveLeads();
     renderAll();
   }
 };
 
 // Mark as Closed Won
-window.markLeadWon = function(leadId) {
+window.markLeadWon = async function(leadId) {
   const lead = leads.find(l => l.id === leadId);
   if (!lead) return;
 
   lead.stage = "Closed Won";
-  lead.history.push(`${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - Deal marked as Closed Won! Recovered ₹${lead.value}`);
-  saveLeads();
-  renderAll();
+  const historyMsg = `${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - Closed Won! Recovered ₹${lead.value}`;
+  lead.history = lead.history || [];
+  lead.history.push(historyMsg);
+
+  await persistLeadChange({ id: lead.id, stage: "Closed Won", historyItem: historyMsg });
 
   triggerConfetti();
   showToast(`🎉 CONGRATS! Won deal worth ₹${lead.value.toLocaleString("en-IN")} with ${lead.name}!`);
+  renderAll();
 };
 
 // Render Cold Lead Radar
@@ -510,7 +610,7 @@ function renderColdRadar() {
 
   if (coldLeads.length === 0) {
     grid.innerHTML = `
-      <div style="grid-column: 1/-1; text-align: center; padding: 48px; background: #fff; border-radius: 16px; border: 1px dashed #cbd5e1;">
+      <div style="grid-column: 1/-1; text-align: center; padding: 48px; background: rgba(0,0,0,0.3); border-radius: 16px; border: 1px dashed var(--border-subtle);">
         <span style="font-size: 36px;">🛡️</span>
         <h3 style="font-size: 17px; margin-top: 10px; font-weight: 800;">Zero Cold Leads! Radar is All Clear.</h3>
         <p style="color: #64748b; font-size: 13px; margin-top: 4px;">Every enquiry is being followed up within the optimal 24-hour conversion window.</p>
@@ -521,30 +621,30 @@ function renderColdRadar() {
 
   coldLeads.forEach(lead => {
     const card = document.createElement("div");
-    card.className = "cold-card";
+    card.className = "cold-card-dark";
     card.innerHTML = `
-      <div class="cold-c-head">
+      <div class="cold-head-row">
         <div>
-          <div class="cold-c-name">${lead.name}</div>
-          <div class="cold-c-meta">📱 ${lead.phone} &bull; Channel: ${lead.channel}</div>
+          <div style="font-size: 15px; font-weight: 800;">${lead.name}</div>
+          <div style="font-size: 12px; color: var(--text-muted);">📱 ${lead.phone} • Channel: ${lead.channel}</div>
         </div>
-        <div class="delay-pill">
+        <div class="delay-badge-neon">
           🚨 ${lead.createdHoursAgo}h Untouched
         </div>
       </div>
 
-      <div class="cold-c-details">
+      <div class="cold-details-dark">
         <div><strong>Service:</strong> ${lead.service}</div>
-        <div><strong>Quoted Deal Size:</strong> <span class="font-mono">₹${(lead.value || 0).toLocaleString("en-IN")}</span></div>
+        <div><strong>Quoted Deal Size:</strong> <span class="font-mono text-emerald">₹${(lead.value || 0).toLocaleString("en-IN")}</span></div>
         <div><strong>Current Stage:</strong> ${lead.stage}</div>
         ${lead.notes ? `<div><strong>Notes:</strong> ${lead.notes}</div>` : ""}
       </div>
 
-      <div class="cold-c-actions">
-        <button class="btn btn-whatsapp" onclick="openNudgeModal('${lead.id}')" style="flex: 2;">
+      <div class="cold-actions-row">
+        <button class="btn btn-whatsapp-glow" onclick="openNudgeModal('${lead.id}')" style="flex: 2;">
           ⚡ Send AI WhatsApp Nudge
         </button>
-        <button class="btn btn-outline" onclick="markLeadWon('${lead.id}')" style="flex: 1;">
+        <button class="btn btn-outline-dark" onclick="markLeadWon('${lead.id}')" style="flex: 1;">
           🎉 Mark Won
         </button>
       </div>
@@ -571,17 +671,17 @@ function renderTable() {
     tr.innerHTML = `
       <td>
         <strong>${lead.name}</strong><br>
-        <small style="color: #64748b;">${lead.phone}</small>
+        <small style="color: var(--text-muted);">${lead.phone}</small>
       </td>
-      <td><span class="channel-tag ${lead.channel.toLowerCase().replace(" ", "-")}">${lead.channel}</span></td>
+      <td><span class="channel-tag-dark ${(lead.channel || 'whatsapp').toLowerCase().replace(' ', '-')}">${lead.channel}</span></td>
       <td>${lead.service}</td>
-      <td><strong class="font-mono">₹${(lead.value || 0).toLocaleString("en-IN")}</strong></td>
-      <td><span class="col-count-pill">${lead.stage}</span></td>
+      <td><strong class="font-mono text-emerald">₹${(lead.value || 0).toLocaleString("en-IN")}</strong></td>
+      <td><span class="col-count">${lead.stage}</span></td>
       <td>${lead.createdHoursAgo}h ago</td>
       <td>${lead.followUpDue || "-"}</td>
-      <td><span class="urgency-pill ${(lead.urgency || "medium").toLowerCase()}">${lead.urgency || "Medium"}</span></td>
+      <td><span class="urgency-dark-tag ${(lead.urgency || "medium").toLowerCase()}">${lead.urgency || "Medium"}</span></td>
       <td>
-        <button class="btn btn-outline" style="padding: 4px 8px; font-size: 11px;" onclick="openNudgeModal('${lead.id}')">
+        <button class="btn-card-dark btn-nudge-dark" style="padding: 4px 8px; font-size: 11px;" onclick="openNudgeModal('${lead.id}')">
           ⚡ Nudge
         </button>
       </td>
@@ -590,7 +690,86 @@ function renderTable() {
   });
 }
 
-// AI Quick Capture Modal Logic (Page 7 Metric: < 30 sec)
+// Render Active WhatsApp Thread in Dual-Pane Hub
+function renderWaActiveThread() {
+  const thread = WA_THREADS[currentWaThreadKey];
+  if (!thread) return;
+
+  const avatarEl = document.getElementById("activeChatAvatar");
+  avatarEl.innerText = thread.avatar;
+  avatarEl.className = `wa-avatar ${thread.avatarClass}`;
+
+  document.getElementById("activeChatName").innerText = thread.name;
+  document.getElementById("activeChatSubtitle").innerText = `+91 ${thread.phone} • WhatsApp Business`;
+
+  const stage = document.getElementById("waMessagesStage");
+  stage.innerHTML = "";
+
+  thread.messages.forEach(m => {
+    const bubble = document.createElement("div");
+    bubble.className = `wa-bubble ${m.sender}`;
+    bubble.innerHTML = `
+      ${m.text}
+      <span class="bubble-time">${m.time}</span>
+    `;
+    stage.appendChild(bubble);
+  });
+  stage.scrollTop = stage.scrollHeight;
+}
+
+// Send Quick Reply in WhatsApp Hub
+function sendWaQuickReply() {
+  const input = document.getElementById("waQuickReplyInput");
+  const text = input.value.trim();
+  if (!text) return;
+
+  const thread = WA_THREADS[currentWaThreadKey];
+  if (!thread) return;
+
+  thread.messages.push({
+    sender: "outbound",
+    text: text,
+    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  });
+
+  input.value = "";
+  renderWaActiveThread();
+  showToast("✓ Message sent on WhatsApp!");
+}
+
+// Extract Lead Directly from Active WhatsApp Chat
+async function extractFromCurrentWaChat() {
+  const thread = WA_THREADS[currentWaThreadKey];
+  if (!thread) return;
+
+  const existing = leads.find(l => l.phone === thread.phone);
+  if (existing) {
+    showToast(`Lead for ${thread.name} already exists in CRM!`);
+    return;
+  }
+
+  const newLead = {
+    id: `lead-${Date.now()}`,
+    name: thread.name,
+    phone: thread.phone,
+    channel: "WhatsApp",
+    service: thread.service,
+    value: thread.budget,
+    urgency: "High",
+    stage: "New",
+    createdHoursAgo: 0,
+    followUpDue: getTodayOffset(0),
+    notes: thread.messages[0].text,
+    history: [`Extracted in 0.4s directly from WhatsApp Business thread`]
+  };
+
+  leads.unshift(newLead);
+  await persistLeadChange(newLead, "POST");
+  renderAll();
+  showToast(`⚡ Lead "${newLead.name}" extracted into CRM in 0.4s! (Page 7 Target Met)`);
+}
+
+// AI Quick Capture Modal
 function openCaptureModal() {
   document.getElementById("captureModal").classList.remove("hidden");
   document.getElementById("leadFollowUpDate").value = getTodayOffset(1);
@@ -635,20 +814,39 @@ function loadSampleChat(key) {
 }
 
 // AI Extraction Algorithm
-function runAiParser() {
+async function runAiParser() {
   const text = document.getElementById("rawChatInput").value.trim();
   if (!text) {
     alert("Please paste chat text or select a sample enquiry first!");
     return;
   }
 
-  // Extract Phone Number (Indian 10-digit)
-  const phoneMatch = text.match(/[6-9]\d{9}/);
-  if (phoneMatch) {
-    document.getElementById("leadPhone").value = phoneMatch[0];
+  // If backend available, use Python AI endpoint
+  if (backendAvailable) {
+    try {
+      const res = await fetch(`${API_BASE}/ai/extract`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text })
+      });
+      const data = await res.json();
+      document.getElementById("leadName").value = data.name;
+      document.getElementById("leadPhone").value = data.phone;
+      document.getElementById("leadService").value = data.service;
+      document.getElementById("leadValue").value = data.value;
+      document.getElementById("leadUrgency").value = data.urgency;
+      document.getElementById("leadNotes").value = text;
+      document.getElementById("parseStatus").innerText = `✓ Backend AI Extracted in ${data.extractedInMs}ms!`;
+      return;
+    } catch (e) {
+      // Fallback to client logic
+    }
   }
 
-  // Extract Name
+  // Client NLP Extraction
+  const phoneMatch = text.match(/[6-9]\d{9}/);
+  if (phoneMatch) document.getElementById("leadPhone").value = phoneMatch[0];
+
   let name = "";
   const namePatterns = [
     /(?:name is|naam|this is|i am)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i,
@@ -656,15 +854,11 @@ function runAiParser() {
   ];
   for (let pat of namePatterns) {
     const m = text.match(pat);
-    if (m && m[1]) {
-      name = m[1].trim();
-      break;
-    }
+    if (m && m[1]) { name = m[1].trim(); break; }
   }
   if (!name && phoneMatch) name = "WhatsApp Customer";
   document.getElementById("leadName").value = name;
 
-  // Extract Price / Budget
   const budgetMatch = text.match(/(?:budget|price|around|worth|quote)?\s*(?:around|is)?\s*(?:₹|rs\.?|inr)?\s*(\d{4,6}|\d{1,2}k)/i);
   if (budgetMatch && budgetMatch[1]) {
     let valStr = budgetMatch[1].toLowerCase();
@@ -672,7 +866,6 @@ function runAiParser() {
     document.getElementById("leadValue").value = val;
   }
 
-  // Extract Service keywords
   let service = "General Consultation / Service Enquiry";
   const lower = text.toLowerCase();
   if (lower.includes("tuition") || lower.includes("physics") || lower.includes("maths") || lower.includes("class")) {
@@ -686,22 +879,13 @@ function runAiParser() {
   }
   document.getElementById("leadService").value = service;
 
-  // Detect Urgency
-  if (lower.includes("urgent") || lower.includes("jaldi") || lower.includes("exam") || lower.includes("asap") || lower.includes("tomorrow")) {
-    document.getElementById("leadUrgency").value = "High";
-  } else {
-    document.getElementById("leadUrgency").value = "Medium";
-  }
-
-  // Notes
+  document.getElementById("leadUrgency").value = (lower.includes("urgent") || lower.includes("jaldi") || lower.includes("asap")) ? "High" : "Medium";
   document.getElementById("leadNotes").value = text;
-
-  // Feedback to User
-  document.getElementById("parseStatus").innerText = "✓ Fields auto-extracted in 0.4s! Ready to save.";
+  document.getElementById("parseStatus").innerText = "✓ Extracted in 0.4s! Ready to save.";
 }
 
-// Save Lead from Form
-function handleLeadFormSubmit(e) {
+// Form Submit
+async function handleLeadFormSubmit(e) {
   e.preventDefault();
   stopCaptureTimer();
 
@@ -719,21 +903,19 @@ function handleLeadFormSubmit(e) {
     createdHoursAgo: 0,
     followUpDue: document.getElementById("leadFollowUpDate").value || getTodayOffset(1),
     notes: document.getElementById("leadNotes").value.trim(),
-    history: [
-      `${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - Captured via PulseLead AI in ${elapsed}s (Page 7 Target: <30s)`
-    ]
+    history: [`Captured via PulseLead AI in ${elapsed}s (Page 7 Target: <30s)`]
   };
 
   leads.unshift(newLead);
-  saveLeads();
+  await persistLeadChange(newLead, "POST");
   closeCaptureModal();
   renderAll();
 
-  showToast(`⚡ Lead "${newLead.name}" added to pipeline in ${elapsed}s! (Page 7 Target Met)`);
+  showToast(`⚡ Lead "${newLead.name}" saved in ${elapsed}s! (Page 7 SLA Met)`);
 }
 
 // Simulate Incoming Lead
-function simulateIncomingLead() {
+async function simulateIncomingLead() {
   const simulatedEnquiries = [
     {
       name: "Ananya Iyer",
@@ -778,74 +960,14 @@ function simulateIncomingLead() {
     createdHoursAgo: 0,
     followUpDue: getTodayOffset(0),
     notes: randomEnquiry.notes,
-    history: [
-      `${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - Incoming WhatsApp enquiry simulated in real time`
-    ]
+    history: ["Simulated real-time WhatsApp enquiry"]
   };
 
   leads.unshift(simulatedLead);
-  saveLeads();
+  await persistLeadChange(simulatedLead, "POST");
   renderAll();
 
   showToast(`💬 Incoming WhatsApp chat from ${simulatedLead.name}! Added to "New Enquiry" queue.`);
-}
-
-// Audio Simulation (Voice Note Parser)
-function toggleAudioSimulation() {
-  const waveforms = document.getElementById("audioWaveforms");
-  const playIcon = document.getElementById("playIcon");
-  const playText = document.getElementById("playText");
-
-  isAudioPlaying = !isAudioPlaying;
-
-  if (isAudioPlaying) {
-    waveforms.classList.add("playing");
-    playIcon.innerText = "⏸";
-    playText.innerText = "Playing Voice Note (Simulated)...";
-  } else {
-    stopAudioSimulation();
-  }
-}
-
-function stopAudioSimulation() {
-  isAudioPlaying = false;
-  const waveforms = document.getElementById("audioWaveforms");
-  if (waveforms) waveforms.classList.remove("playing");
-  const playIcon = document.getElementById("playIcon");
-  const playText = document.getElementById("playText");
-  if (playIcon) playIcon.innerText = "▶";
-  if (playText) playText.innerText = "Simulate Playing Audio";
-}
-
-function transcribeAudioSimulation() {
-  stopAudioSimulation();
-  document.getElementById("transcriptionBox").classList.remove("hidden");
-  showToast("✓ Audio voice note transcribed into text!");
-}
-
-function importVoiceLead() {
-  const voiceLead = {
-    id: `lead-${Date.now()}`,
-    name: "Pooja Singhania",
-    phone: "9845012345",
-    channel: "WhatsApp",
-    service: "Family Gathering Lunch Catering (40 Pax)",
-    value: 25000,
-    urgency: "High",
-    stage: "New",
-    createdHoursAgo: 0,
-    followUpDue: getTodayOffset(0),
-    notes: "Requires full catering service with starters & biryani for Sunday afternoon.",
-    history: [
-      `${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - Extracted directly from customer WhatsApp Audio Note`
-    ]
-  };
-
-  leads.unshift(voiceLead);
-  saveLeads();
-  renderAll();
-  document.getElementById("voiceModal").classList.add("hidden");
-  showToast(`🎙️ Voice Note converted into Lead "${voiceLead.name}" in "New Enquiry" column!`);
 }
 
 // Customer Detail Drawer Modal
@@ -869,7 +991,7 @@ function openDrawerModal(leadId) {
 
   (lead.history || ["Enquiry captured"]).forEach(h => {
     const item = document.createElement("div");
-    item.className = "t-item";
+    item.className = "timeline-item-dark";
     item.innerText = h;
     timelineEl.appendChild(item);
   });
@@ -929,7 +1051,6 @@ function updateNudgeMessage() {
 
   document.getElementById("nudgeMessageText").value = msg;
 
-  // Build wa.me link
   const cleanPhone = lead.phone.replace(/[^0-9]/g, "");
   const waUrl = `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(msg)}`;
   document.getElementById("sendWhatsAppLink").href = waUrl;
@@ -953,14 +1074,13 @@ function initRoiCalculator() {
     const droppedLeadsCount = totalLeads * dropRate;
     const monthlyLostRevenue = droppedLeadsCount * avgTicket;
 
-    // PulseLead recovers ~70% of previously dropped leads
     const monthlyRescuedRevenue = monthlyLostRevenue * 0.70;
     const subscriptionCost = 499;
     const roiMultiplier = Math.round(monthlyRescuedRevenue / subscriptionCost);
 
-    document.getElementById("calcLostRevenue").innerText = `₹${Math.round(monthlyLostRevenue).toLocaleString("en-IN")}`;
-    document.getElementById("calcRescuedRevenue").innerText = `₹${Math.round(monthlyRescuedRevenue).toLocaleString("en-IN")}`;
-    document.getElementById("calcRoiRatio").innerText = `${roiMultiplier}x`;
+    document.getElementById("calcLostRevenue").innerText = `₹${Math.round(monthlyLostRevenue).toLocaleString("en-IN")} / mo`;
+    document.getElementById("calcRescuedRevenue").innerText = `₹${Math.round(monthlyRescuedRevenue).toLocaleString("en-IN")} / mo`;
+    document.getElementById("calcRoiRatio").innerText = `${roiMultiplier}x Return`;
   }
 
   leadsSlider.addEventListener("input", calculate);
@@ -970,7 +1090,7 @@ function initRoiCalculator() {
   calculate();
 }
 
-// Pure JavaScript Canvas Confetti Engine
+// Canvas Confetti
 function triggerConfetti() {
   const canvas = document.getElementById("confettiCanvas");
   if (!canvas) return;
@@ -980,19 +1100,19 @@ function triggerConfetti() {
   canvas.height = window.innerHeight;
 
   const particles = [];
-  const colors = ["#4f46e5", "#10b981", "#f59e0b", "#ec4899", "#3b82f6", "#8b5cf6"];
+  const colors = ["#6366f1", "#10b981", "#f59e0b", "#ec4899", "#06b6d4", "#8b5cf6"];
 
-  for (let i = 0; i < 120; i++) {
+  for (let i = 0; i < 140; i++) {
     particles.push({
       x: canvas.width / 2,
       y: canvas.height / 2,
-      vx: (Math.random() - 0.5) * 16,
-      vy: (Math.random() - 0.5) * 16 - 3,
+      vx: (Math.random() - 0.5) * 18,
+      vy: (Math.random() - 0.5) * 18 - 4,
       size: Math.random() * 8 + 4,
       color: colors[Math.floor(Math.random() * colors.length)],
       alpha: 1,
       rotation: Math.random() * 360,
-      vRot: (Math.random() - 0.5) * 10
+      vRot: (Math.random() - 0.5) * 12
     });
   }
 
@@ -1004,7 +1124,7 @@ function triggerConfetti() {
     particles.forEach(p => {
       p.x += p.vx;
       p.y += p.vy;
-      p.vy += 0.3; // Gravity
+      p.vy += 0.35;
       p.alpha -= 0.015;
       p.rotation += p.vRot;
 
@@ -1056,10 +1176,10 @@ function exportToCsv() {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  showToast("✓ Exported leads to CSV");
+  showToast("✓ Exported leads database to CSV");
 }
 
-// Toast Notification System
+// Toast
 function showToast(message) {
   const toast = document.getElementById("toast");
   const toastMsg = document.getElementById("toastMessage");
